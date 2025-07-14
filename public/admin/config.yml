@@ -1,6 +1,5 @@
 backend:
-  name: auth0
-  login: true
+  name: git-gateway
   branch: main
   squash_merges: true
 
