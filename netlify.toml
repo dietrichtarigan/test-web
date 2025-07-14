@@ -48,6 +48,12 @@
   [headers.values]
     Cache-Control = "public, max-age=2592000"
 
+# Cache uploads
+[[headers]]
+  for = "/uploads/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
 # Email confirmation redirects
 [[redirects]]
   from = "/*"
@@ -61,10 +67,27 @@
   status = 200
   conditions = {Query = {recovery_token = ":token"}}
 
-# Admin CMS redirects
+# Admin dashboard redirects
+[[redirects]]
+  from = "/admin-dashboard"
+  to = "/admin-dashboard/"
+  status = 301
+
+[[redirects]]
+  from = "/admin-dashboard/*"
+  to = "/admin-dashboard/"
+  status = 200
+
+# Netlify CMS redirects
 [[redirects]]
   from = "/admin/*"
   to = "/admin/index.html"
+  status = 200
+
+# API routes for development (will be handled by Netlify Functions in production)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
   status = 200
 
 # SPA fallback

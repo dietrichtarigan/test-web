@@ -21,7 +21,8 @@
     "deploy:netlify": "powershell -ExecutionPolicy Bypass -File deploy-script.ps1",
     "postinstall": "echo 'Installation complete! Run npm run setup to configure CMS.'",
     "test:build": "npm run clean && npm run build",
-    "validate": "npm run lint && npm run test:build"
+    "validate": "npm run lint && npm run test:build",
+    "dev:api": "NODE_ENV=development npm run dev"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.2",
