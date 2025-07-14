@@ -1,18 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Conditional export configuration untuk Netlify compatibility
-  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
+  // Static export configuration untuk Netlify compatibility
+  output: 'export',
   trailingSlash: true,
   images: {
     unoptimized: true
   },
   eslint: {
     ignoreDuringBuilds: true,
-  },
-  // Enable API routes in development
-  experimental: {
-    serverComponentsExternalPackages: ['gray-matter']
   }
 };
 

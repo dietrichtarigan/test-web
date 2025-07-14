@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import InfoProfForm from '@/components/InfoProfForm'
+import { getInfoProfPosts, InfoProfPost } from '@/lib/content'
 
 interface InfoProfData {
   slug: string
@@ -35,14 +35,9 @@ export default function AdminPageSimple() {
   const loadInfoProfData = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/content/infoprof')
-      if (response.ok) {
-        const result = await response.json()
-        setInfoProfData(result.data || [])
-      } else {
-        console.error('Failed to load data:', response.status)
-        setMessage({ type: 'error', text: 'Gagal memuat data info karier' })
-      }
+      // Load data from static files instead of API
+      const data = getInfoProfPosts()
+      setInfoProfData(data)
     } catch (error) {
       console.error('Error loading infoprof data:', error)
       setMessage({ type: 'error', text: 'Gagal memuat data info karier' })
@@ -61,33 +56,9 @@ export default function AdminPageSimple() {
   // Handle form submission
   const handleInfoProfSubmit = async (formData: any) => {
     try {
-      console.log('Submitting form data:', formData)
-      
-      const response = await fetch('/api/content/infoprof', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-
-      console.log('Response status:', response.status)
-
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success) {
-          setMessage({ type: 'success', text: 'Info karier berhasil disimpan!' })
-          setShowInfoProfForm(false)
-          loadInfoProfData() // Reload data
-        } else {
-          const errorMsg = result.error || 'Gagal menyimpan data'
-          setMessage({ type: 'error', text: errorMsg })
-        }
-      } else {
-        const errorText = await response.text()
-        console.error('API Error:', errorText)
-        setMessage({ type: 'error', text: 'Gagal menyimpan data' })
-      }
+      console.log('Form submission not available in static export mode')
+      setMessage({ type: 'error', text: 'Form submission tidak tersedia dalam mode static export. Gunakan Netlify CMS untuk menambah konten.' })
+      setShowInfoProfForm(false)
     } catch (error) {
       console.error('Error submitting form:', error)
       const errorMsg = error instanceof Error ? error.message : 'Terjadi kesalahan saat menyimpan data'
@@ -415,10 +386,36 @@ export default function AdminPageSimple() {
 
         {/* InfoProf Form Modal */}
         {showInfoProfForm && (
-          <InfoProfForm
-            onSubmit={handleInfoProfSubmit}
-            onCancel={() => setShowInfoProfForm(false)}
-          />
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full z-50">
+            <div className="relative top-20 mx-auto p-6 border w-11/12 max-w-4xl shadow-xl rounded-lg bg-white">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-gray-900">
+                  ⚠️ Static Export Mode
+                </h3>
+                <button
+                  onClick={() => setShowInfoProfForm(false)}
+                  className="text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 flex items-center justify-center"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <div className="text-center py-8">
+                <div className="text-gray-400 text-4xl mb-4">🚫</div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Form Tidak Tersedia</h3>
+                <p className="text-gray-600 mb-4">
+                  Dalam mode static export, form submission tidak tersedia. 
+                  Gunakan Netlify CMS untuk menambah dan mengedit konten.
+                </p>
+                <a
+                  href="/admin/"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
+                >
+                  🎨 Buka Netlify CMS
+                </a>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

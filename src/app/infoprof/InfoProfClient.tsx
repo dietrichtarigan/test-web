@@ -8,35 +8,10 @@ interface Props {
 }
 
 export default function InfoProfClient({ initialData }: Props) {
-  const [allInfo, setAllInfo] = useState<InfoProfPost[]>(initialData)
+  const [allInfo] = useState<InfoProfPost[]>(initialData)
   const [filteredInfo, setFilteredInfo] = useState<InfoProfPost[]>(initialData)
   const [selectedKategori, setSelectedKategori] = useState('Semua')
   const [selectedArsip, setSelectedArsip] = useState('Aktif')
-  const [isRefreshing, setIsRefreshing] = useState(false)
-
-  // Function to refresh data from API
-  const refreshData = async () => {
-    setIsRefreshing(true)
-    try {
-      const response = await fetch('/api/content/infoprof')
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success) {
-          setAllInfo(result.data || [])
-        }
-      }
-    } catch (error) {
-      console.error('Error refreshing data:', error)
-    } finally {
-      setIsRefreshing(false)
-    }
-  }
-
-  // Auto-refresh every 30 seconds
-  useEffect(() => {
-    const interval = setInterval(refreshData, 30000)
-    return () => clearInterval(interval)
-  }, [])
 
   // Filter content when filters change
   useEffect(() => {
@@ -95,25 +70,7 @@ export default function InfoProfClient({ initialData }: Props) {
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gray-50 rounded-lg p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Filter Info</h2>
-              <button
-                onClick={refreshData}
-                disabled={isRefreshing}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
-              >
-                {isRefreshing ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Refreshing...
-                  </>
-                ) : (
-                  <>
-                    🔄 Refresh
-                  </>
-                )}
-              </button>
-            </div>
+            <h2 className="text-2xl font-bold mb-6 text-gray-900">Filter Info</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
