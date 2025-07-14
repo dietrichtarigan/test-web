@@ -1,27 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getInfoProfPosts, InfoProfPost } from '@/lib/content'
-
-interface InfoProfData {
-  slug: string
-  judul: string
-  kategori: string
-  tanggal_post: string
-  deskripsi: string
-  link_utama?: string
-  kontak_email?: string
-  sumber: string
-  content: string
-  arsip?: boolean
-  tags?: string[]
-  deadline?: string
-}
+import { getInfoProfPosts, InfoProfPost } from '@/lib/static-data'
 
 export default function AdminPageSimple() {
   const [activeTab, setActiveTab] = useState('overview')
   const [showInfoProfForm, setShowInfoProfForm] = useState(false)
-  const [infoProfData, setInfoProfData] = useState<InfoProfData[]>([])
+  const [infoProfData, setInfoProfData] = useState<InfoProfPost[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
@@ -87,19 +72,19 @@ export default function AdminPageSimple() {
             </div>
             
             <div className="flex items-center space-x-4">
-              <a 
-                href="/admin/" 
-                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 transition"
-              >
-                🎨 Netlify CMS
-              </a>
-              
-              <a 
-                href="/" 
-                className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition"
-              >
-                🌐 View Site
-              </a>
+                <a 
+                  href="/admin/" 
+                  className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 transition"
+                >
+                  🎨 Netlify CMS
+                </a>
+                
+                <a 
+                  href="/" 
+                  className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition"
+                >
+                  🌐 View Site
+                </a>
             </div>
           </div>
         </div>

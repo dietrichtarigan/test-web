@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getInfoProfPosts } from '@/lib/content'
+import { getInfoProfPosts } from '@/lib/static-data'
 
 interface InfoProfPost {
   id: string

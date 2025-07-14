@@ -1,4 +1,4 @@
-import { getInfoProfPosts, InfoProfPost } from '@/lib/content'
+import { getInfoProfPosts, InfoProfPost } from '@/lib/static-data'
 import InfoProfClient from './InfoProfClient'
 
 export default async function InfoProfPage() {
