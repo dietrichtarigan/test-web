@@ -7,8 +7,8 @@ media_folder: "public/uploads"
 public_folder: "/uploads"
 
 # Site configuration
-site_url: https://arcade-himafi.netlify.app
-display_url: https://arcade-himafi.netlify.app
+site_url: https://arcadehimafi.netlify.app
+display_url: https://arcadehimafi.netlify.app
 logo_url: /logo.png
 
 # Editor preview

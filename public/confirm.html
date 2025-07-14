@@ -138,7 +138,7 @@
         });
 
         window.netlifyIdentity.on("signup", () => {
-          updateContent('📧 Cek Email', 'Silakan cek email untuk konfirmasi akun.', false);
+          updateContent('📧 Cek Email', 'Silakan cek email untuk konfirmasi akun.<br><br>⚠️ Klik link di email sebelum login!', false);
         });
 
         window.netlifyIdentity.on("error", err => {

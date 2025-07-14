@@ -123,9 +123,13 @@
       log('Mengatur autentikasi...');
       
       window.netlifyIdentity.on("init", user => {
-        if (user) {
-          log('User sudah login: ' + user.email);
+        if (user && user.email_confirmed_at) {
+          log('User sudah login dan terkonfirmasi: ' + user.email);
           hideAuthButtons();
+        } else if (user && !user.email_confirmed_at) {
+          log('Email belum dikonfirmasi untuk: ' + user.email);
+          showAuthButtons();
+          alert('⚠️ Email belum dikonfirmasi!\n\nSilakan cek email dan klik link konfirmasi.');
         } else {
           log('Silakan login untuk melanjutkan');
           showAuthButtons();
@@ -167,7 +171,8 @@
       });
 
       window.netlifyIdentity.on("signup", user => {
-        log('Pendaftaran berhasil! Silakan cek email untuk konfirmasi.');
+        log('Pendaftaran berhasil! Cek email untuk konfirmasi sebelum login.');
+        alert('✅ Pendaftaran berhasil!\n\n📧 Silakan cek email untuk link konfirmasi.\n\n⚠️ Anda harus konfirmasi email dulu sebelum bisa login.');
         showAuthButtons();
       });
 

@@ -90,6 +90,12 @@
   to = "/admin/index.html"
   status = 200
 
+# Signup page
+[[redirects]]
+  from = "/signup"
+  to = "/signup.html"
+  status = 200
+
 # API routes for development (will be handled by Netlify Functions in production)
 [[redirects]]
   from = "/api/*"

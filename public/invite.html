@@ -122,7 +122,10 @@
         });
 
         window.netlifyIdentity.on("signup", user => {
-          updateContent('✅ Pendaftaran Berhasil!', 'Silakan cek email untuk konfirmasi akun, kemudian login ke admin panel.', true);
+          updateContent('✅ Pendaftaran Berhasil!', '📧 Silakan cek email untuk konfirmasi akun.<br><br>⚠️ Anda harus klik link di email untuk mengaktifkan akun sebelum bisa login.', false);
+          setTimeout(() => {
+            alert('PENTING: Cek email dan klik link konfirmasi sebelum login!');
+          }, 2000);
         });
 
         window.netlifyIdentity.on("login", user => {

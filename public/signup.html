@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Signup - ARCADE HIMAFI</title>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .btn:hover { background: #45a049; }
+        .btn-blue { background: #2196F3; }
+        .btn-blue:hover { background: #1976D2; }
+        .btn-orange { background: #FF9800; }
+        .btn-orange:hover { background: #F57C00; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 ARCADE HIMAFI ADMIN</h1>
+        <h2>Pendaftaran Admin</h2>
+        
+        <div id="status">
+            <p>Pilih metode pendaftaran:</p>
+            <button onclick="directSignup()" class="btn">📝 Daftar Langsung</button>
+            <button onclick="openLogin()" class="btn btn-blue">🔑 Login (Sudah Punya Akun)</button>
+            <button onclick="resetPassword()" class="btn btn-orange">🔄 Reset Password</button>
+        </div>
+        
+        <div id="result" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        function updateStatus(message) {
+            document.getElementById('result').innerHTML = message;
+        }
+
+        function directSignup() {
+            updateStatus('Membuka dialog pendaftaran...');
+            if (window.netlifyIdentity) {
+                window.netlifyIdentity.open('signup');
+            }
+        }
+
+        function openLogin() {
+            updateStatus('Membuka dialog login...');
+            if (window.netlifyIdentity) {
+                window.netlifyIdentity.open('login');
+            }
+        }
+
+        function resetPassword() {
+            updateStatus('Membuka dialog reset password...');
+            if (window.netlifyIdentity) {
+                window.netlifyIdentity.open('login');
+            }
+        }
+
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+                console.log('Identity initialized:', user);
+                if (user) {
+                    updateStatus(`✅ Sudah login sebagai: ${user.email}<br><a href="/admin/" class="btn">Masuk Admin Panel</a>`);
+                }
+            });
+
+            window.netlifyIdentity.on("signup", user => {
+                updateStatus(`
+                    ✅ <strong>Pendaftaran Berhasil!</strong><br><br>
+                    📧 <strong>PENTING:</strong> Cek email Anda dan klik link konfirmasi<br><br>
+                    ⚠️ Setelah konfirmasi email, baru bisa login ke admin panel<br><br>
+                    <a href="/admin/" class="btn">Ke Admin Panel</a>
+                `);
+            });
+
+            window.netlifyIdentity.on("login", user => {
+                updateStatus(`✅ Login berhasil! Redirect ke admin panel...`);
+                setTimeout(() => {
+                    window.location.href = '/admin/';
+                }, 2000);
+            });
+
+            window.netlifyIdentity.on("error", err => {
+                console.error('Error:', err);
+                updateStatus(`❌ Error: ${err.message}<br><br>Coba lagi atau hubungi admin.`);
+            });
+
+            window.netlifyIdentity.init();
+        } else {
+            updateStatus('❌ Error: Sistem autentikasi gagal dimuat');
+        }
+    </script>
+</body>
+</html>
