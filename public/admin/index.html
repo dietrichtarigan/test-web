@@ -81,22 +81,25 @@
     </div>
   </div>
 
-  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms@2.10.192/dist/netlify-cms.js"></script>
   
   <!-- Add CMS configuration -->
   <script>
-    // Configure CMS
+    // Configure CMS with proper initialization
     window.CMS_MANUAL_INIT = true;
     
-    // Wait for CMS to load then initialize
-    window.addEventListener('load', () => {
+    // Initialize CMS when everything is loaded
+    document.addEventListener('DOMContentLoaded', function() {
       if (window.CMS) {
-        console.log('Initializing CMS...');
-        window.CMS.init({
-          config: {
-            load_config_file: true
-          }
-        });
+        console.log('🎯 Initializing Netlify CMS...');
+        try {
+          window.CMS.init();
+          console.log('✅ CMS initialized successfully');
+        } catch (error) {
+          console.error('❌ CMS initialization failed:', error);
+        }
+      } else {
+        console.error('❌ Netlify CMS not loaded');
       }
     });
   </script>
@@ -226,28 +229,30 @@
       log('Error: Netlify Identity tidak dapat dimuat');
     }
 
-    // Auto-show help message after 10 seconds
+    // Auto-show help message after 5 seconds
     setTimeout(() => {
       const currentUser = window.netlifyIdentity ? window.netlifyIdentity.currentUser() : null;
       if (!currentUser && document.getElementById('loading').style.display !== 'none') {
         document.getElementById('loading').innerHTML = `
           <h1>🎯 ARCADE HIMAFI CMS</h1>
-          <h3>🔐 Belum Login?</h3>
+          <h3>🔐 Admin Panel</h3>
           <p style="font-size: 16px; margin: 20px 0;">
-            Pilih salah satu opsi di bawah:
+            Klik tombol di bawah untuk login:
           </p>
           <div style="margin: 20px 0;">
             <button onclick="openLogin()" style="
-              padding: 12px 24px;
+              padding: 15px 30px;
               background: #4CAF50;
               color: white;
               border: none;
               border-radius: 8px;
               cursor: pointer;
               margin: 8px;
-              font-size: 16px;
-            ">🔑 Login (Sudah Punya Akun)</button>
-            <br>
+              font-size: 18px;
+              font-weight: bold;
+            ">🔑 LOGIN</button>
+          </div>
+          <div style="margin: 20px 0;">
             <button onclick="openSignup()" style="
               padding: 12px 24px;
               background: #2196F3;
@@ -258,7 +263,6 @@
               margin: 8px;
               font-size: 16px;
             ">📝 Daftar Admin Baru</button>
-            <br>
             <button onclick="openForgotPassword()" style="
               padding: 12px 24px;
               background: #FF9800;
@@ -270,9 +274,6 @@
               font-size: 16px;
             ">🔄 Lupa Password</button>
           </div>
-          <p style="font-size: 14px; color: #666;">
-            Atau refresh halaman jika sudah login sebelumnya.
-          </p>
           <button onclick="window.location.reload()" style="
             padding: 10px 20px;
             background: #9E9E9E;
@@ -289,33 +290,33 @@
           <h1>🎯 ARCADE HIMAFI CMS</h1>
           <h3>✅ Login Berhasil!</h3>
           <p>Halo <strong>${currentUser.email}</strong></p>
-          <p style="margin: 20px 0;">Admin panel sedang dimuat...</p>
+          <p style="margin: 20px 0;">Memuat admin panel...</p>
           <div style="margin: 20px 0;">
-            <button onclick="window.location.reload()" style="
-              padding: 12px 24px;
+            <button onclick="forceShowCMS()" style="
+              padding: 15px 30px;
               background: #4CAF50;
               color: white;
               border: none;
               border-radius: 8px;
               cursor: pointer;
               margin: 8px;
-              font-size: 16px;
-            ">🔄 Refresh untuk Memuat CMS</button>
-            <br>
-            <button onclick="showQuickActions()" style="
-              padding: 12px 24px;
-              background: #2196F3;
-              color: white;
-              border: none;
-              border-radius: 8px;
-              cursor: pointer;
-              margin: 8px;
-              font-size: 16px;
-            ">🚀 Aksi Cepat</button>
+              font-size: 18px;
+              font-weight: bold;
+            ">🚀 TAMPILKAN CMS</button>
           </div>
+          <button onclick="window.location.reload()" style="
+            padding: 12px 24px;
+            background: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 16px;
+          ">� Refresh untuk Reload</button>
         `;
       }
-    }, 10000);
+    }, 5000);
 
     function showQuickActions() {
       document.getElementById('loading').innerHTML = `
@@ -499,24 +500,35 @@
     }, 30000);
 
     function forceShowCMS() {
+      log('🚀 Memaksa tampilkan CMS...');
       document.getElementById('loading').style.display = 'none';
       
-      // Debug CMS elements
-      console.log('Debugging CMS elements:');
-      console.log('nc-root:', document.querySelector('#nc-root'));
-      console.log('CMS app:', document.querySelector('[data-react-root]'));
-      console.log('Entry editor:', document.querySelector('.nc-entryEditor-fields'));
-      console.log('Save button:', document.querySelector('button[type="submit"]'));
-      
-      // Try to make buttons clickable
+      // Force CMS to show by removing any display none
       setTimeout(() => {
-        const allButtons = document.querySelectorAll('button');
+        const cmsElements = [
+          document.querySelector('#nc-root'),
+          document.querySelector('[data-react-root]'),
+          document.querySelector('.css-1pahdxg-SiteWrapper'),
+          document.querySelector('[data-testid]')
+        ];
+        
+        cmsElements.forEach(el => {
+          if (el) {
+            el.style.display = 'block';
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+          }
+        });
+        
+        // Try to make all buttons clickable
+        const allButtons = document.querySelectorAll('button, a, input[type="submit"]');
         allButtons.forEach(btn => {
           btn.style.pointerEvents = 'auto';
           btn.style.cursor = 'pointer';
         });
-        console.log('Made', allButtons.length, 'buttons clickable');
-      }, 1000);
+        
+        console.log('✅ Forced CMS display');
+      }, 100);
     }
   </script>
 </body>
