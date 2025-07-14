@@ -50,6 +50,35 @@
     <p>Content Management System</p>
     <div class="spinner"></div>
     <p id="status">Memuat admin panel...</p>
+    <div id="auth-buttons" style="display: none; margin-top: 20px;">
+      <button onclick="openLogin()" style="
+        padding: 10px 20px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+      ">🔑 Login</button>
+      <button onclick="openSignup()" style="
+        padding: 10px 20px;
+        background: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+      ">📝 Daftar Admin Baru</button>
+      <button onclick="openForgotPassword()" style="
+        padding: 10px 20px;
+        background: #FF9800;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+      ">🔄 Lupa Password</button>
+    </div>
   </div>
 
   <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
@@ -60,12 +89,47 @@
       document.getElementById('status').textContent = message;
     }
 
+    function openLogin() {
+      log('Membuka dialog login...');
+      window.netlifyIdentity.open('login');
+    }
+
+    function openSignup() {
+      log('Membuka dialog pendaftaran...');
+      window.netlifyIdentity.open('signup');
+    }
+
+    function openForgotPassword() {
+      log('Membuka dialog reset password...');
+      window.netlifyIdentity.open('login');
+      // Trigger forgot password in the dialog
+      setTimeout(() => {
+        const forgotBtn = document.querySelector('[data-netlify-identity-forgot-password]');
+        if (forgotBtn) forgotBtn.click();
+      }, 1000);
+    }
+
+    function showAuthButtons() {
+      document.getElementById('auth-buttons').style.display = 'block';
+      document.querySelector('.spinner').style.display = 'none';
+    }
+
+    function hideAuthButtons() {
+      document.getElementById('auth-buttons').style.display = 'none';
+    }
+
     // Check if netlify identity is loaded
     if (window.netlifyIdentity) {
       log('Mengatur autentikasi...');
       
       window.netlifyIdentity.on("init", user => {
-        log(user ? 'User sudah login: ' + user.email : 'Silakan login untuk melanjutkan');
+        if (user) {
+          log('User sudah login: ' + user.email);
+          hideAuthButtons();
+        } else {
+          log('Silakan login untuk melanjutkan');
+          showAuthButtons();
+        }
         
         // Check URL parameters and hash for tokens
         const urlParams = new URLSearchParams(window.location.search);
@@ -82,15 +146,18 @@
         
         if (inviteToken) {
           log('Membuka dialog pendaftaran admin...');
+          hideAuthButtons();
           window.netlifyIdentity.open('signup');
         } else if (confirmationToken || recoveryToken) {
           log('Membuka dialog konfirmasi...');
+          hideAuthButtons();
           window.netlifyIdentity.open();
         }
       });
 
       window.netlifyIdentity.on("login", user => {
         log('Login berhasil! Memuat CMS...');
+        hideAuthButtons();
         window.netlifyIdentity.close();
         
         // Hide loading after successful login
@@ -99,14 +166,28 @@
         }, 2000);
       });
 
+      window.netlifyIdentity.on("signup", user => {
+        log('Pendaftaran berhasil! Silakan cek email untuk konfirmasi.');
+        showAuthButtons();
+      });
+
       window.netlifyIdentity.on("logout", () => {
         log('Logout berhasil');
+        showAuthButtons();
         window.location.reload();
       });
 
       window.netlifyIdentity.on("error", err => {
         log('Error: ' + err.message);
         console.error('Identity error:', err);
+        showAuthButtons();
+      });
+
+      window.netlifyIdentity.on("close", () => {
+        const currentUser = window.netlifyIdentity.currentUser();
+        if (!currentUser) {
+          showAuthButtons();
+        }
       });
 
       // Initialize
@@ -115,22 +196,62 @@
       log('Error: Netlify Identity tidak dapat dimuat');
     }
 
-    // Auto-hide loading screen after 10 seconds
+    // Auto-show help message after 10 seconds
     setTimeout(() => {
-      if (document.getElementById('loading').style.display !== 'none') {
+      const currentUser = window.netlifyIdentity ? window.netlifyIdentity.currentUser() : null;
+      if (!currentUser && document.getElementById('loading').style.display !== 'none') {
         document.getElementById('loading').innerHTML = `
           <h1>🎯 ARCADE HIMAFI CMS</h1>
-          <p>Panel admin siap digunakan!</p>
-          <p style="font-size: 14px;">Jika CMS tidak muncul, coba refresh halaman.</p>
+          <h3>🔐 Belum Login?</h3>
+          <p style="font-size: 16px; margin: 20px 0;">
+            Pilih salah satu opsi di bawah:
+          </p>
+          <div style="margin: 20px 0;">
+            <button onclick="openLogin()" style="
+              padding: 12px 24px;
+              background: #4CAF50;
+              color: white;
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              margin: 8px;
+              font-size: 16px;
+            ">🔑 Login (Sudah Punya Akun)</button>
+            <br>
+            <button onclick="openSignup()" style="
+              padding: 12px 24px;
+              background: #2196F3;
+              color: white;
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              margin: 8px;
+              font-size: 16px;
+            ">📝 Daftar Admin Baru</button>
+            <br>
+            <button onclick="openForgotPassword()" style="
+              padding: 12px 24px;
+              background: #FF9800;
+              color: white;
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              margin: 8px;
+              font-size: 16px;
+            ">🔄 Lupa Password</button>
+          </div>
+          <p style="font-size: 14px; color: #666;">
+            Atau refresh halaman jika sudah login sebelumnya.
+          </p>
           <button onclick="window.location.reload()" style="
             padding: 10px 20px;
-            background: white;
-            color: #3b82f6;
+            background: #9E9E9E;
+            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 20px;
-          ">Refresh Halaman</button>
+            margin-top: 10px;
+          ">🔄 Refresh Halaman</button>
         `;
       }
     }, 10000);
