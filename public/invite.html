@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Email Confirmation - ARCADE HIMAFI</title>
+    <title>Admin Invitation - ARCADE HIMAFI</title>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
       body {
@@ -74,10 +74,10 @@
   </head>
   <body>
     <div class="container">
-      <div class="logo">🎓</div>
-      <div class="title">ARCADE HIMAFI</div>
+      <div class="logo">🎯</div>
+      <div class="title">ARCADE HIMAFI ADMIN</div>
       <div id="content">
-        <div class="message">Memproses konfirmasi email...</div>
+        <div class="message">Memproses undangan admin...</div>
         <div class="spinner"></div>
       </div>
     </div>
@@ -92,76 +92,69 @@
 
       if (window.netlifyIdentity) {
         window.netlifyIdentity.on("init", user => {
-          console.log('Identity initialized, user:', user);
+          console.log('Identity initialized for invite, user:', user);
           
           const urlParams = new URLSearchParams(window.location.search);
           const hash = window.location.hash;
           
-          // Check for invite token in URL parameters or hash
+          // Extract invite token from URL or hash
           const inviteToken = urlParams.get('invite_token') || 
                               (hash.includes('invite_token') ? hash.split('invite_token=')[1]?.split('&')[0] : null);
-          const confirmationToken = urlParams.get('confirmation_token') || 
-                                    (hash.includes('confirmation_token') ? hash.split('confirmation_token=')[1]?.split('&')[0] : null);
-          const recoveryToken = urlParams.get('recovery_token') || 
-                                (hash.includes('recovery_token') ? hash.split('recovery_token=')[1]?.split('&')[0] : null);
           
-          console.log('Tokens found:', { inviteToken, confirmationToken, recoveryToken });
+          console.log('Invite token found:', inviteToken);
           
           if (inviteToken) {
-            // Handle invite token - open signup dialog
-            updateContent('🎯 Undangan Admin', 'Menyelesaikan proses undangan admin...');
-            window.netlifyIdentity.open('signup');
-          } else if (confirmationToken || recoveryToken) {
-            // Handle confirmation/recovery token
-            updateContent('Konfirmasi Email', 'Menyelesaikan proses konfirmasi...');
-            window.netlifyIdentity.open();
+            updateContent('🎯 Undangan Admin', 'Silakan lengkapi pendaftaran admin Anda...');
+            // Automatically open signup modal for invite
+            setTimeout(() => {
+              window.netlifyIdentity.open('signup');
+            }, 1000);
           } else if (user) {
-            // User is already confirmed and logged in
-            updateContent('✅ Berhasil!', 'Anda sudah login. Redirecting ke admin panel...', true);
+            // User already logged in
+            updateContent('✅ Sudah Login!', 'Anda sudah terdaftar sebagai admin. Mengarahkan ke panel admin...', true);
             setTimeout(() => {
               window.location.href = '/admin/';
             }, 2000);
           } else {
-            // No token, redirect to admin
-            updateContent('🔄 Redirect', 'Mengarahkan ke halaman admin...');
-            setTimeout(() => {
-              window.location.href = '/admin/';
-            }, 1500);
+            // No invite token found
+            updateContent('❌ Token Tidak Valid', 'Link undangan tidak valid atau sudah kedaluwarsa.', true);
           }
         });
 
-        window.netlifyIdentity.on("login", () => {
-          updateContent('✅ Login Berhasil!', 'Selamat datang! Mengarahkan ke admin panel...', true);
+        window.netlifyIdentity.on("signup", user => {
+          updateContent('✅ Pendaftaran Berhasil!', 'Silakan cek email untuk konfirmasi akun, kemudian login ke admin panel.', true);
+        });
+
+        window.netlifyIdentity.on("login", user => {
+          updateContent('✅ Login Berhasil!', 'Selamat datang admin! Mengarahkan ke panel admin...', true);
           setTimeout(() => {
             window.location.href = '/admin/';
           }, 2000);
         });
 
-        window.netlifyIdentity.on("signup", () => {
-          updateContent('📧 Cek Email', 'Silakan cek email untuk konfirmasi akun.', false);
-        });
-
         window.netlifyIdentity.on("error", err => {
           console.error('Netlify Identity error:', err);
-          updateContent('❌ Error', `Terjadi kesalahan: ${err.message}<br><br>Silakan coba lagi atau hubungi admin.`, true);
+          updateContent('❌ Error', `Terjadi kesalahan: ${err.message}<br><br>Silakan coba lagi atau hubungi administrator.`, true);
         });
 
         window.netlifyIdentity.on("close", () => {
           console.log('Identity widget closed');
-          // Check if user is now logged in
+          // Check if user completed signup/login
           const currentUser = window.netlifyIdentity.currentUser();
           if (currentUser) {
-            updateContent('✅ Berhasil!', 'Konfirmasi berhasil! Mengarahkan ke admin panel...', true);
+            updateContent('✅ Berhasil!', 'Proses selesai! Mengarahkan ke admin panel...', true);
             setTimeout(() => {
               window.location.href = '/admin/';
             }, 2000);
+          } else {
+            updateContent('🔄 Menunggu', 'Silakan lengkapi proses pendaftaran atau login untuk melanjutkan.', false);
           }
         });
 
         // Initialize
         window.netlifyIdentity.init();
       } else {
-        updateContent('❌ Error', 'Netlify Identity tidak dapat dimuat. Silakan refresh halaman.', true);
+        updateContent('❌ Error', 'Sistem autentikasi tidak dapat dimuat. Silakan refresh halaman atau hubungi administrator.', true);
       }
     </script>
   </body>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Test Email Redirect</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .test-link {
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            background: #007cba;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .test-link:hover {
+            background: #005a87;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Email Redirect - ARCADE HIMAFI</h1>
+    
+    <div class="test-section">
+        <h2>📧 Test Email Confirmation</h2>
+        <p>Test link konfirmasi email (akan redirect ke confirm.html):</p>
+        <a href="/?confirmation_token=test123456" class="test-link" target="_blank">
+            Test Confirmation Token
+        </a>
+    </div>
+
+    <div class="test-section">
+        <h2>🔑 Test Password Recovery</h2>
+        <p>Test link recovery password (akan redirect ke confirm.html):</p>
+        <a href="/?recovery_token=recovery123456" class="test-link" target="_blank">
+            Test Recovery Token
+        </a>
+    </div>
+
+    <div class="test-section">
+        <h2>🎯 Test Admin Invitation</h2>
+        <p>Test link undangan admin (akan redirect ke invite.html):</p>
+        <a href="/?invite_token=2VpuSQeOEhM_B_zTatPKtg" class="test-link" target="_blank">
+            Test Invite Token (Problem Link)
+        </a>
+        <a href="/?invite_token=testinvite123456" class="test-link" target="_blank">
+            Test Invite Token (New)
+        </a>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Test Results</h2>
+        <ul>
+            <li><strong>Confirmation Token:</strong> Harus redirect ke /confirm.html dan buka dialog konfirmasi</li>
+            <li><strong>Recovery Token:</strong> Harus redirect ke /confirm.html dan buka dialog recovery</li>
+            <li><strong>Invite Token:</strong> Harus redirect ke /invite.html dan buka dialog signup</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Direct Links</h2>
+        <a href="/admin/" class="test-link" target="_blank">Admin Panel</a>
+        <a href="/confirm.html" class="test-link" target="_blank">Confirm Page</a>
+        <a href="/invite.html" class="test-link" target="_blank">Invite Page</a>
+    </div>
+
+    <script>
+        console.log('Test page loaded');
+        console.log('Current URL:', window.location.href);
+        
+        // Test URL parsing
+        const urlParams = new URLSearchParams(window.location.search);
+        console.log('URL Parameters:', Object.fromEntries(urlParams));
+        
+        // Test hash parsing
+        if (window.location.hash) {
+            console.log('Hash:', window.location.hash);
+        }
+    </script>
+</body>
+</html>
