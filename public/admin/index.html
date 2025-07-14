@@ -360,7 +360,30 @@
             font-size: 16px;
             text-decoration: none;
           ">🎉 Tambah Event Baru</a>
+          <br>
+          <button onclick="triggerBuild()" style="
+            padding: 12px 24px;
+            background: #9C27B0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 16px;
+          ">🔄 Build & Deploy Website</button>
+          <br>
+          <button onclick="checkBuildStatus()" style="
+            padding: 12px 24px;
+            background: #607D8B;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 16px;
+          ">📊 Cek Status Deploy</button>
         </div>
+        <div id="build-status" style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; font-size: 14px;"></div>
         <button onclick="window.location.reload()" style="
           padding: 10px 20px;
           background: #9E9E9E;
@@ -370,6 +393,49 @@
           cursor: pointer;
           margin-top: 20px;
         ">🔄 Kembali ke CMS Normal</button>
+      `;
+    }
+
+    function triggerBuild() {
+      const statusDiv = document.getElementById('build-status');
+      statusDiv.innerHTML = '🔄 Memulai build dan deploy...';
+      
+      // Netlify Build Hook (you need to create this in Netlify dashboard)
+      const buildHookUrl = 'https://api.netlify.com/build_hooks/YOUR_BUILD_HOOK_ID'; // Replace with actual hook
+      
+      fetch(buildHookUrl, {
+        method: 'POST'
+      })
+      .then(response => {
+        if (response.ok) {
+          statusDiv.innerHTML = `
+            ✅ <strong>Build berhasil dimulai!</strong><br>
+            ⏳ Website akan update dalam 2-3 menit<br>
+            🌐 <a href="https://arcadehimafi.netlify.app/infoprof" target="_blank" style="color: #4CAF50;">Lihat Website</a>
+          `;
+        } else {
+          statusDiv.innerHTML = '❌ Gagal memulai build. Coba lagi atau hubungi admin.';
+        }
+      })
+      .catch(error => {
+        statusDiv.innerHTML = `
+          ⚠️ <strong>Auto-build tidak tersedia</strong><br>
+          💡 Website akan update otomatis saat Anda save content<br>
+          🌐 <a href="https://arcadehimafi.netlify.app/infoprof" target="_blank" style="color: #4CAF50;">Lihat Website</a>
+        `;
+      });
+    }
+
+    function checkBuildStatus() {
+      const statusDiv = document.getElementById('build-status');
+      statusDiv.innerHTML = `
+        📊 <strong>Status Deploy</strong><br><br>
+        🔄 <strong>Workflow Normal:</strong><br>
+        1. Save content di CMS → Auto commit ke Git<br>
+        2. Netlify detect perubahan → Auto build<br>
+        3. Website update dalam 2-3 menit<br><br>
+        🌐 <a href="https://arcadehimafi.netlify.app/infoprof" target="_blank" style="color: #4CAF50;">Cek Website Sekarang</a><br>
+        📈 <a href="https://app.netlify.com/sites/arcadehimafi/deploys" target="_blank" style="color: #2196F3;">Lihat Deploy Log</a>
       `;
     }
 

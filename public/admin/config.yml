@@ -3,6 +3,10 @@ backend:
   branch: main
   squash_merges: true
 
+# Auto-deploy workflow
+publish_mode: simple # Langsung publish tanpa editorial workflow
+# publish_mode: editorial_workflow # Uncomment untuk review process
+
 media_folder: "public/uploads"
 public_folder: "/uploads"
 
@@ -13,7 +17,6 @@ logo_url: /logo.png
 
 # Editor preview
 show_preview_links: true
-publish_mode: editorial_workflow
 
 collections:
   - name: "infoprof"

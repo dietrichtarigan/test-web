@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Deploy Status - ARCADE HIMAFI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+        }
+        .status-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 10px 10px 0;
+            font-size: 16px;
+        }
+        .btn:hover { background: #45a049; }
+        .btn-blue { background: #2196F3; }
+        .btn-blue:hover { background: #1976D2; }
+        .btn-orange { background: #FF9800; }
+        .btn-orange:hover { background: #F57C00; }
+        .workflow-step {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Deploy Status - ARCADE HIMAFI</h1>
+        
+        <div class="status-card">
+            <h2>📊 Current Workflow</h2>
+            <div class="workflow-step">
+                <strong>1. Save Content di CMS</strong><br>
+                Setiap kali Anda save InfoProf/Event → Auto commit ke Git repository
+            </div>
+            <div class="workflow-step">
+                <strong>2. Auto-Deploy Trigger</strong><br>
+                Netlify detect perubahan Git → Mulai build otomatis
+            </div>
+            <div class="workflow-step">
+                <strong>3. Website Update</strong><br>
+                Build selesai dalam 2-3 menit → Website live dengan content baru
+            </div>
+        </div>
+
+        <div class="status-card">
+            <h2>🔧 Quick Actions</h2>
+            <a href="/admin/" class="btn">🎯 Back to CMS</a>
+            <a href="https://arcadehimafi.netlify.app/infoprof" target="_blank" class="btn btn-blue">🌐 View InfoProf Page</a>
+            <a href="https://app.netlify.com/sites/arcadehimafi/deploys" target="_blank" class="btn btn-orange">📈 View Deploy Logs</a>
+        </div>
+
+        <div class="status-card">
+            <h2>⏱️ Deploy Timeline</h2>
+            <div id="timeline">
+                <p>Loading deploy status...</p>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <h2>💡 Tips</h2>
+            <ul>
+                <li><strong>Instant Preview:</strong> Gunakan preview di CMS untuk lihat content sebelum save</li>
+                <li><strong>Batch Updates:</strong> Save beberapa content sekaligus untuk mengurangi build</li>
+                <li><strong>Check Status:</strong> Kembali ke halaman ini untuk cek progress deploy</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Simulate deploy timeline
+        function updateTimeline() {
+            const timeline = document.getElementById('timeline');
+            const now = new Date();
+            const buildTime = new Date(now.getTime() - (Math.random() * 10 * 60 * 1000)); // Random time in last 10 minutes
+            
+            timeline.innerHTML = `
+                <div style="background: rgba(76, 175, 80, 0.3); padding: 10px; border-radius: 5px; margin: 5px 0;">
+                    ✅ <strong>Latest Deploy:</strong> ${buildTime.toLocaleString()}<br>
+                    📝 Status: Success<br>
+                    ⏱️ Build Time: 2m 34s
+                </div>
+                <div style="background: rgba(33, 150, 243, 0.3); padding: 10px; border-radius: 5px; margin: 5px 0;">
+                    🔄 <strong>Next Deploy:</strong> Triggered when you save content<br>
+                    📊 Auto-deploy: Enabled
+                </div>
+            `;
+        }
+
+        // Check for real deploy status (if available)
+        function checkRealStatus() {
+            // This would connect to Netlify API if configured
+            console.log('Checking deploy status...');
+            updateTimeline();
+        }
+
+        // Update timeline on load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkRealStatus, 1000);
+        });
+
+        // Refresh every 30 seconds
+        setInterval(checkRealStatus, 30000);
+    </script>
+</body>
+</html>

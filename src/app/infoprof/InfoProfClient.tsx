@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { InfoProfPost } from '@/lib/static-data'
+import { InfoProfPost } from '@/lib/cms-data'
 
 interface Props {
   initialData: InfoProfPost[]

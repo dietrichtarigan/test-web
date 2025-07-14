@@ -1,4 +1,4 @@
-import { getInfoProfPosts, InfoProfPost } from '@/lib/static-data'
+import { getAllInfoProfPosts, InfoProfPost } from '@/lib/cms-data'
 import InfoProfClient from './InfoProfClient'
 
 export default async function InfoProfPage() {
@@ -6,9 +6,10 @@ export default async function InfoProfPage() {
   let allInfo: InfoProfPost[] = []
   
   try {
-    allInfo = getInfoProfPosts()
+    allInfo = getAllInfoProfPosts()
+    console.log(`Loaded ${allInfo.length} InfoProf posts`)
   } catch (error) {
-    console.error('Error loading content:', error)
+    console.error('Error loading InfoProf content:', error)
     allInfo = []
   }
 
