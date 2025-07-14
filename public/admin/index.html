@@ -82,6 +82,24 @@
   </div>
 
   <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  
+  <!-- Add CMS configuration -->
+  <script>
+    // Configure CMS
+    window.CMS_MANUAL_INIT = true;
+    
+    // Wait for CMS to load then initialize
+    window.addEventListener('load', () => {
+      if (window.CMS) {
+        console.log('Initializing CMS...');
+        window.CMS.init({
+          config: {
+            load_config_file: true
+          }
+        });
+      }
+    });
+  </script>
 
   <script>
     function log(message) {
@@ -164,10 +182,17 @@
         hideAuthButtons();
         window.netlifyIdentity.close();
         
-        // Hide loading after successful login
+        // Hide loading immediately and show CMS
+        document.getElementById('loading').style.display = 'none';
+        
+        // Force CMS to show
         setTimeout(() => {
-          document.getElementById('loading').style.display = 'none';
-        }, 2000);
+          const cmsRoot = document.querySelector('#nc-root');
+          if (!cmsRoot || cmsRoot.children.length === 0) {
+            // Reload if CMS doesn't appear
+            window.location.reload();
+          }
+        }, 3000);
       });
 
       window.netlifyIdentity.on("signup", user => {
@@ -258,17 +283,175 @@
             margin-top: 10px;
           ">🔄 Refresh Halaman</button>
         `;
+      } else if (currentUser && document.getElementById('loading').style.display !== 'none') {
+        // User is logged in but CMS not showing
+        document.getElementById('loading').innerHTML = `
+          <h1>🎯 ARCADE HIMAFI CMS</h1>
+          <h3>✅ Login Berhasil!</h3>
+          <p>Halo <strong>${currentUser.email}</strong></p>
+          <p style="margin: 20px 0;">Admin panel sedang dimuat...</p>
+          <div style="margin: 20px 0;">
+            <button onclick="window.location.reload()" style="
+              padding: 12px 24px;
+              background: #4CAF50;
+              color: white;
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              margin: 8px;
+              font-size: 16px;
+            ">🔄 Refresh untuk Memuat CMS</button>
+            <br>
+            <button onclick="showQuickActions()" style="
+              padding: 12px 24px;
+              background: #2196F3;
+              color: white;
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              margin: 8px;
+              font-size: 16px;
+            ">🚀 Aksi Cepat</button>
+          </div>
+        `;
       }
     }, 10000);
 
-    // Hide loading when CMS is ready
-    setTimeout(() => {
+    function showQuickActions() {
+      document.getElementById('loading').innerHTML = `
+        <h1>🎯 ARCADE HIMAFI CMS</h1>
+        <h3>🚀 Aksi Cepat Admin</h3>
+        <div style="margin: 20px 0;">
+          <a href="#/collections/infoprof/new" style="
+            display: inline-block;
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 16px;
+            text-decoration: none;
+          ">📋 Tambah Info Profesi Baru</a>
+          <br>
+          <a href="#/collections/infoprof" style="
+            display: inline-block;
+            padding: 12px 24px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 16px;
+            text-decoration: none;
+          ">📋 Lihat Semua Info Profesi</a>
+          <br>
+          <a href="#/collections/event/new" style="
+            display: inline-block;
+            padding: 12px 24px;
+            background: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 16px;
+            text-decoration: none;
+          ">🎉 Tambah Event Baru</a>
+        </div>
+        <button onclick="window.location.reload()" style="
+          padding: 10px 20px;
+          background: #9E9E9E;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          margin-top: 20px;
+        ">🔄 Kembali ke CMS Normal</button>
+      `;
+    }
+
+    // Hide loading when CMS is ready - check more frequently
+    const checkCMS = setInterval(() => {
       const cmsRoot = document.querySelector('#nc-root');
-      if (cmsRoot && cmsRoot.children.length > 0) {
-        log('CMS siap!');
+      const cmsApp = document.querySelector('[data-react-root]') || document.querySelector('.css-1pahdxg-SiteWrapper');
+      const currentUser = window.netlifyIdentity ? window.netlifyIdentity.currentUser() : null;
+      
+      if (currentUser && (
+        (cmsRoot && cmsRoot.children.length > 0) || 
+        cmsApp ||
+        document.querySelector('.nc-entryEditor-fields') ||
+        document.querySelector('[data-testid]')
+      )) {
+        log('CMS siap! Selamat datang di admin panel.');
         document.getElementById('loading').style.display = 'none';
+        clearInterval(checkCMS);
+        
+        // Ensure CMS is interactive
+        setTimeout(() => {
+          const saveBtn = document.querySelector('button[type="submit"]') || document.querySelector('[data-testid="save-button"]');
+          if (saveBtn) {
+            console.log('Save button found and should be clickable');
+          }
+        }, 2000);
       }
-    }, 5000);
+    }, 500);
+    
+    // Stop checking after 30 seconds
+    setTimeout(() => {
+      clearInterval(checkCMS);
+      const currentUser = window.netlifyIdentity ? window.netlifyIdentity.currentUser() : null;
+      if (currentUser && document.getElementById('loading').style.display !== 'none') {
+        document.getElementById('loading').innerHTML = `
+          <h1>🎯 ARCADE HIMAFI CMS</h1>
+          <h3>✅ Login Berhasil!</h3>
+          <p>Memuat admin panel...</p>
+          <button onclick="forceShowCMS()" style="
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+          ">🔄 Paksa Tampilkan CMS</button>
+          <button onclick="window.location.reload()" style="
+            padding: 12px 24px;
+            background: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+          ">🔄 Refresh Halaman</button>
+        `;
+      }
+    }, 30000);
+
+    function forceShowCMS() {
+      document.getElementById('loading').style.display = 'none';
+      
+      // Debug CMS elements
+      console.log('Debugging CMS elements:');
+      console.log('nc-root:', document.querySelector('#nc-root'));
+      console.log('CMS app:', document.querySelector('[data-react-root]'));
+      console.log('Entry editor:', document.querySelector('.nc-entryEditor-fields'));
+      console.log('Save button:', document.querySelector('button[type="submit"]'));
+      
+      // Try to make buttons clickable
+      setTimeout(() => {
+        const allButtons = document.querySelectorAll('button');
+        allButtons.forEach(btn => {
+          btn.style.pointerEvents = 'auto';
+          btn.style.cursor = 'pointer';
+        });
+        console.log('Made', allButtons.length, 'buttons clickable');
+      }, 1000);
+    }
   </script>
 </body>
 </html>
