@@ -1,0 +1,13 @@
+# Admin Panel Redirects
+/admin/* /admin/index.html 200
+/cms /admin 301
+/cms/* /admin/* 301
+
+# InfoProf Admin Redirect Fix
+/infoprof/admin /admin 301
+/infoprof/admin/* /admin/* 301
+
+# Netlify Identity Redirects (sudah ada di netlify.toml tapi backup di sini)
+/admin?invite_token=* /invite.html?invite_token=:splat 200
+/admin?confirmation_token=* /confirm.html?confirmation_token=:splat 200
+/admin?recovery_token=* /confirm.html?recovery_token=:splat 200

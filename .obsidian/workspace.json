@@ -170,6 +170,8 @@
   },
   "active": "753ff2a3299e2ef1",
   "lastOpenFiles": [
+    "guide/AUTO-DEPLOY-SETUP.md",
+    "public/_redirects",
     "out/test-form/index.txt",
     "out/test-form/index.html",
     "out/test-form",
@@ -179,8 +181,6 @@
     "out/test-api/index.txt",
     "out/test-api/index.html",
     "out/test-api",
-    "out/infoprof/index.txt",
-    "out/infoprof/index.html",
     "guide/WORKFLOW-OPTIMIZATION-COMPLETE.md",
     "guide/CMS-WEBSITE-CONNECTION-SUCCESS.md",
     "node_modules/strip-bom-string/README.md",

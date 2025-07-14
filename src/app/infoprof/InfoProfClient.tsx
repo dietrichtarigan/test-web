@@ -196,7 +196,7 @@ export default function InfoProfClient({ initialData }: Props) {
           <p className="text-xl mb-8 text-green-100">
             Ikuti media sosial kami untuk mendapatkan info magang, beasiswa, dan lowongan kerja terbaru
           </p>
-          <div className="flex justify-center space-x-6">
+          <div className="flex justify-center space-x-6 flex-wrap">
             <a 
               href="https://instagram.com/careerhimafi" 
               target="_blank"
@@ -212,6 +212,12 @@ export default function InfoProfClient({ initialData }: Props) {
               className="bg-white text-green-700 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors"
             >
               LinkedIn
+            </a>
+            <a 
+              href="/admin" 
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              🔑 Admin Panel
             </a>
           </div>
         </div>
